@@ -1,0 +1,6 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "chunk_size": 1200,
+  "chroma_persist_directory": "data/chroma_db",
+  "collection_name": "uds_knowledge_base"
+}

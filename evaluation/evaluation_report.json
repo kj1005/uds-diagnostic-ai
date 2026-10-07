@@ -1,0 +1,410 @@
+{
+  "project": "AI-Powered UDS Diagnostic Assistant for Automated Test Case Generation",
+  "dataset": "dataset.json",
+  "knowledge_base": "UDS Synthetic Knowledge Base",
+  "deterministic": true,
+  "external_llm_used": false,
+  "retrieval": {
+    "total": 10,
+    "hit_at_1": 0.9,
+    "hit_at_3": 1.0,
+    "hit_at_1_count": 9,
+    "hit_at_3_count": 10,
+    "cases": [
+      {
+        "id": "R01",
+        "question": "What is UDS and what is a service identifier?",
+        "expected_section": "UDS OVERVIEW",
+        "retrieved_sections": [
+          "UDS OVERVIEW",
+          "SERVICE 0x2E — WRITE DATA BY IDENTIFIER",
+          "SERVICE 0x31 — ROUTINE CONTROL"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R02",
+        "question": "Which subfunction requests Extended Diagnostic Session and what response is expected?",
+        "expected_section": "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL",
+        "retrieved_sections": [
+          "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL",
+          "SAMPLE DIAGNOSTIC SCENARIOS",
+          "SAMPLE TEST CASE TEMPLATES"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R03",
+        "question": "What does ECU Reset request 11 01 mean and what positive response is expected?",
+        "expected_section": "SERVICE 0x11 — ECU RESET",
+        "retrieved_sections": [
+          "SERVICE 0x11 — ECU RESET",
+          "SAMPLE TEST CASE TEMPLATES",
+          "NEGATIVE RESPONSE CODES"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R04",
+        "question": "Which DID is the demonstration VIN and what request reads it?",
+        "expected_section": "SERVICE 0x22 — READ DATA BY IDENTIFIER",
+        "retrieved_sections": [
+          "SYNTHETIC DATASET LIMITATIONS",
+          "SERVICE 0x22 — READ DATA BY IDENTIFIER",
+          "SAMPLE TEST CASE TEMPLATES"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R05",
+        "question": "What are the Request Seed and Send Key Security Access subfunctions?",
+        "expected_section": "SERVICE 0x27 — SECURITY ACCESS",
+        "retrieved_sections": [
+          "SERVICE 0x27 — SECURITY ACCESS",
+          "SERVICE 0x2E — WRITE DATA BY IDENTIFIER",
+          "NEGATIVE RESPONSE CODES"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R06",
+        "question": "What request format is used to write data by identifier?",
+        "expected_section": "SERVICE 0x2E — WRITE DATA BY IDENTIFIER",
+        "retrieved_sections": [
+          "SERVICE 0x2E — WRITE DATA BY IDENTIFIER",
+          "SERVICE 0x22 — READ DATA BY IDENTIFIER",
+          "POSITIVE AND NEGATIVE RESPONSE STRUCTURE"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R07",
+        "question": "What are the Routine Control start, stop, and results subfunctions?",
+        "expected_section": "SERVICE 0x31 — ROUTINE CONTROL",
+        "retrieved_sections": [
+          "SERVICE 0x31 — ROUTINE CONTROL",
+          "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL",
+          "SERVICE 0x3E — TESTER PRESENT"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R08",
+        "question": "What is the Tester Present request and positive response?",
+        "expected_section": "SERVICE 0x3E — TESTER PRESENT",
+        "retrieved_sections": [
+          "SERVICE 0x3E — TESTER PRESENT",
+          "SAMPLE TEST CASE TEMPLATES",
+          "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R09",
+        "question": "What is the format of a negative response and what does NRC 0x31 mean?",
+        "expected_section": "NEGATIVE RESPONSE CODES",
+        "retrieved_sections": [
+          "NEGATIVE RESPONSE CODES",
+          "POSITIVE AND NEGATIVE RESPONSE STRUCTURE",
+          "SERVICE 0x31 — ROUTINE CONTROL"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      },
+      {
+        "id": "R10",
+        "question": "What are the positive and negative response message structures?",
+        "expected_section": "POSITIVE AND NEGATIVE RESPONSE STRUCTURE",
+        "retrieved_sections": [
+          "POSITIVE AND NEGATIVE RESPONSE STRUCTURE",
+          "NEGATIVE RESPONSE CODES",
+          "SERVICE 0x31 — ROUTINE CONTROL"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "status": "passed"
+      }
+    ]
+  },
+  "validator": {
+    "total": 8,
+    "passed": 8,
+    "failed": 0,
+    "errors": 0,
+    "cases": [
+      {
+        "id": "V01",
+        "request": "22 F1 90",
+        "expected": {
+          "valid": true,
+          "service_id": "0x22",
+          "nrc": null
+        },
+        "actual": {
+          "valid": true,
+          "service_id": "0x22",
+          "nrc": null,
+          "source_section": "SERVICE 0x22 — READ DATA BY IDENTIFIER"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V02",
+        "request": "22 FF FF",
+        "expected": {
+          "valid": false,
+          "service_id": "0x22",
+          "nrc": "0x31"
+        },
+        "actual": {
+          "valid": false,
+          "service_id": "0x22",
+          "nrc": "0x31",
+          "source_section": "SERVICE 0x22 — READ DATA BY IDENTIFIER"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V03",
+        "request": "10 03",
+        "expected": {
+          "valid": true,
+          "service_id": "0x10",
+          "nrc": null
+        },
+        "actual": {
+          "valid": true,
+          "service_id": "0x10",
+          "nrc": null,
+          "source_section": "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V04",
+        "request": "10 7F",
+        "expected": {
+          "valid": false,
+          "service_id": "0x10",
+          "nrc": "0x12"
+        },
+        "actual": {
+          "valid": false,
+          "service_id": "0x10",
+          "nrc": "0x12",
+          "source_section": "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V05",
+        "request": "22 F1",
+        "expected": {
+          "valid": false,
+          "service_id": "0x22",
+          "nrc": "0x13"
+        },
+        "actual": {
+          "valid": false,
+          "service_id": "0x22",
+          "nrc": "0x13",
+          "source_section": "SERVICE 0x22 — READ DATA BY IDENTIFIER"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V06",
+        "request": "3E 00",
+        "expected": {
+          "valid": true,
+          "service_id": "0x3E",
+          "nrc": null
+        },
+        "actual": {
+          "valid": true,
+          "service_id": "0x3E",
+          "nrc": null,
+          "source_section": "SERVICE 0x3E — TESTER PRESENT"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V07",
+        "request": "99 00",
+        "expected": {
+          "valid": false,
+          "service_id": "0x99",
+          "nrc": "0x11"
+        },
+        "actual": {
+          "valid": false,
+          "service_id": "0x99",
+          "nrc": "0x11",
+          "source_section": "UDS OVERVIEW"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      },
+      {
+        "id": "V08",
+        "request": "27 02",
+        "expected": {
+          "valid": false,
+          "service_id": "0x27",
+          "nrc": "0x13"
+        },
+        "actual": {
+          "valid": false,
+          "service_id": "0x27",
+          "nrc": "0x13",
+          "source_section": "SERVICE 0x27 — SECURITY ACCESS"
+        },
+        "checks": {
+          "valid": true,
+          "service_id": true,
+          "nrc": true
+        },
+        "status": "passed"
+      }
+    ]
+  },
+  "test_generation": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "errors": 0,
+    "cases": [
+      {
+        "id": "G01",
+        "requirement": "Generate tests for reading the VIN DID",
+        "expected_requests": [
+          "22 F1 90",
+          "22 FF FF"
+        ],
+        "generated_requests": [
+          "22 F1 90",
+          "22 FF FF"
+        ],
+        "expected_types": [
+          "positive",
+          "negative"
+        ],
+        "generated_types": [
+          "negative",
+          "positive"
+        ],
+        "missing_requests": [],
+        "missing_types": [],
+        "source_sections": [
+          "SAMPLE TEST CASE TEMPLATES"
+        ],
+        "status": "passed"
+      },
+      {
+        "id": "G02",
+        "requirement": "Generate tests for Diagnostic Session Control",
+        "expected_requests": [
+          "10 03",
+          "10"
+        ],
+        "generated_requests": [
+          "10 03",
+          "10"
+        ],
+        "expected_types": [
+          "positive",
+          "negative"
+        ],
+        "generated_types": [
+          "negative",
+          "positive"
+        ],
+        "missing_requests": [],
+        "missing_types": [],
+        "source_sections": [
+          "REQUEST VALIDATION RULES; SAMPLE TEST CASE TEMPLATES; NEGATIVE RESPONSE CODES",
+          "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL"
+        ],
+        "status": "passed"
+      },
+      {
+        "id": "G03",
+        "requirement": "Generate tests for Tester Present",
+        "expected_requests": [
+          "3E 00",
+          "3E"
+        ],
+        "generated_requests": [
+          "3E 00",
+          "3E"
+        ],
+        "expected_types": [
+          "positive",
+          "negative"
+        ],
+        "generated_types": [
+          "negative",
+          "positive"
+        ],
+        "missing_requests": [],
+        "missing_types": [],
+        "source_sections": [
+          "REQUEST VALIDATION RULES; SAMPLE TEST CASE TEMPLATES; NEGATIVE RESPONSE CODES",
+          "SERVICE 0x3E — TESTER PRESENT"
+        ],
+        "status": "passed"
+      }
+    ]
+  }
+}

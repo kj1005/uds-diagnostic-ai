@@ -1,0 +1,8 @@
+﻿venv/
+.venv/
+__pycache__/
+*.pyc
+.chroma/
+data/chroma_db/
+.env
+*.log

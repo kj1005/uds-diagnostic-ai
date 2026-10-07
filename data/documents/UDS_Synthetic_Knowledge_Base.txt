@@ -1,0 +1,673 @@
+UDS DIAGNOSTIC AI — SYNTHETIC KNOWLEDGE BASE
+================================================
+
+Dataset Type: Synthetic / Demonstration Knowledge Base
+Project: AI-Powered UDS Diagnostic Assistant for Automated Test Case Generation
+Purpose: Controlled knowledge source for RAG, diagnostic Q&A, request validation,
+and test-case generation.
+
+IMPORTANT:
+This knowledge base is synthetic and created for academic/project demonstration.
+It is NOT an official ISO 14229 specification and does not represent any OEM-specific
+diagnostic implementation.
+
+================================================
+1. UDS OVERVIEW
+================================================
+
+Unified Diagnostic Services (UDS) is a diagnostic communication protocol used
+between a diagnostic tester and an Electronic Control Unit (ECU).
+
+A diagnostic request is generally sent from a tester to an ECU. The ECU may
+respond with a positive response or a negative response.
+
+A UDS service is identified by a Service Identifier (SID).
+
+For this synthetic project, the following services are supported:
+
+0x10 - Diagnostic Session Control
+0x11 - ECU Reset
+0x22 - Read Data By Identifier
+0x27 - Security Access
+0x2E - Write Data By Identifier
+0x31 - Routine Control
+0x3E - Tester Present
+
+
+================================================
+2. SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL
+================================================
+
+Service Name:
+Diagnostic Session Control
+
+Service Identifier:
+0x10
+
+Purpose:
+The Diagnostic Session Control service is used to request a change to a
+diagnostic session.
+
+Example subfunctions:
+
+0x01 - Default Session
+0x02 - Programming Session
+0x03 - Extended Diagnostic Session
+
+Example request:
+10 03
+
+Meaning:
+Request transition to Extended Diagnostic Session.
+
+Positive response:
+50 <subfunction> <session parameters>
+
+Example:
+50 03 ...
+
+Negative response:
+7F 10 <NRC>
+
+Possible negative response conditions include:
+- Unsupported subfunction
+- Incorrect message length
+- Conditions not correct
+
+Typical use:
+A diagnostic tester may enter an appropriate diagnostic session before
+performing diagnostic operations that require that session.
+
+
+================================================
+3. SERVICE 0x11 — ECU RESET
+================================================
+
+Service Name:
+ECU Reset
+
+Service Identifier:
+0x11
+
+Purpose:
+The ECU Reset service requests an ECU reset.
+
+Example subfunctions:
+
+0x01 - Hard Reset
+0x02 - Key Off On Reset
+0x03 - Soft Reset
+
+Example request:
+11 01
+
+Meaning:
+Request a Hard Reset.
+
+Positive response:
+51 <subfunction> <optional reset information>
+
+Negative response:
+7F 11 <NRC>
+
+Possible negative response conditions include:
+- Unsupported reset type
+- Conditions not correct
+- Incorrect message length
+
+
+================================================
+4. SERVICE 0x22 — READ DATA BY IDENTIFIER
+================================================
+
+Service Name:
+Read Data By Identifier
+
+Service Identifier:
+0x22
+
+Purpose:
+The Read Data By Identifier service is used to request data associated with
+a Data Identifier (DID).
+
+DID:
+A Data Identifier is a two-byte identifier representing a specific piece of
+ECU data.
+
+Example DID:
+F190 - Vehicle Identification Number (VIN) demonstration DID.
+
+Example request:
+22 F1 90
+
+Meaning:
+Request the data associated with DID F190.
+
+Positive response:
+62 <DID> <data>
+
+Example:
+62 F1 90 <VIN data>
+
+Negative response:
+7F 22 <NRC>
+
+Common negative response examples:
+0x13 - Incorrect Message Length Or Invalid Format
+0x22 - Conditions Not Correct
+0x31 - Request Out Of Range
+
+Example negative scenario:
+If the tester requests an unsupported DID:
+
+Request:
+22 FF FF
+
+Possible response:
+7F 22 31
+
+Meaning:
+The requested data identifier is outside the supported range in this
+synthetic knowledge base.
+
+Important validation:
+A valid ReadDataByIdentifier request must contain:
+- SID 0x22
+- At least one two-byte DID
+
+Example valid request:
+22 F1 90
+
+Example invalid request:
+22 F1
+
+Reason:
+The DID is incomplete because a DID requires two bytes.
+
+
+================================================
+5. SERVICE 0x27 — SECURITY ACCESS
+================================================
+
+Service Name:
+Security Access
+
+Service Identifier:
+0x27
+
+Purpose:
+The Security Access service is used to perform a diagnostic security access
+procedure involving a seed and key exchange.
+
+Example subfunctions:
+
+0x01 - Request Seed
+0x02 - Send Key
+
+Example seed request:
+27 01
+
+Example positive response:
+67 01 <seed>
+
+Example key request:
+27 02 <key>
+
+Example positive response:
+67 02
+
+Negative response:
+7F 27 <NRC>
+
+Possible negative response conditions:
+- Security access denied
+- Required delay not completed
+- Incorrect message length
+- Invalid key
+
+
+================================================
+6. SERVICE 0x2E — WRITE DATA BY IDENTIFIER
+================================================
+
+Service Name:
+Write Data By Identifier
+
+Service Identifier:
+0x2E
+
+Purpose:
+The Write Data By Identifier service is used to write data associated with
+a Data Identifier.
+
+Example request:
+2E <DID> <data>
+
+Example:
+2E F1 90 <data>
+
+Positive response:
+6E <DID>
+
+Negative response:
+7F 2E <NRC>
+
+Possible negative response conditions:
+- Request out of range
+- Conditions not correct
+- Security access denied
+- Incorrect message length
+
+Validation:
+A WriteDataByIdentifier request must contain:
+- SID 0x2E
+- Two-byte DID
+- Data associated with the DID
+
+
+================================================
+7. SERVICE 0x31 — ROUTINE CONTROL
+================================================
+
+Service Name:
+Routine Control
+
+Service Identifier:
+0x31
+
+Purpose:
+The Routine Control service is used to start, stop, or request results from
+a diagnostic routine.
+
+Example subfunctions:
+
+0x01 - Start Routine
+0x02 - Stop Routine
+0x03 - Request Routine Results
+
+Example request:
+31 01 <RID>
+
+RID:
+Routine Identifier.
+
+The RID is represented by two bytes.
+
+Positive response:
+71 <subfunction> <RID> <optional data>
+
+Negative response:
+7F 31 <NRC>
+
+Possible negative response conditions:
+- Unsupported routine
+- Conditions not correct
+- Request out of range
+- Incorrect message length
+
+
+================================================
+8. SERVICE 0x3E — TESTER PRESENT
+================================================
+
+Service Name:
+Tester Present
+
+Service Identifier:
+0x3E
+
+Purpose:
+Tester Present is used to indicate that a diagnostic tester is still active.
+
+Example request:
+3E 00
+
+Positive response:
+7E 00
+
+Subfunction:
+0x00 - Zero subfunction
+
+Possible negative response:
+7F 3E <NRC>
+
+Typical use:
+Tester Present may be periodically transmitted to maintain a diagnostic
+communication session depending on the ECU implementation.
+
+
+================================================
+9. NEGATIVE RESPONSE CODES
+================================================
+
+A negative response has the general structure:
+
+7F <Requested SID> <NRC>
+
+Where:
+7F = Negative Response Service Identifier
+Requested SID = Service that produced the negative response
+NRC = Negative Response Code
+
+Synthetic NRC definitions supported by this project:
+
+0x10 - General Reject
+Meaning:
+The ECU rejected the request for a general reason.
+
+0x11 - Service Not Supported
+Meaning:
+The requested service is not supported.
+
+0x12 - Sub-function Not Supported
+Meaning:
+The requested subfunction is not supported.
+
+0x13 - Incorrect Message Length Or Invalid Format
+Meaning:
+The request has an incorrect length or invalid message format.
+
+0x22 - Conditions Not Correct
+Meaning:
+Required conditions for executing the request are not satisfied.
+
+0x31 - Request Out Of Range
+Meaning:
+The requested parameter, identifier, or operation is outside the supported
+range.
+
+0x33 - Security Access Denied
+Meaning:
+The requested operation requires security access or the security conditions
+are not satisfied.
+
+
+================================================
+10. POSITIVE AND NEGATIVE RESPONSE STRUCTURE
+================================================
+
+Positive responses generally use a positive response Service Identifier
+associated with the requested service.
+
+Examples:
+
+Request:
+10 03
+
+Positive response:
+50 03 ...
+
+Request:
+22 F1 90
+
+Positive response:
+62 F1 90 <data>
+
+Request:
+3E 00
+
+Positive response:
+7E 00
+
+
+Negative responses use:
+
+7F <Requested SID> <NRC>
+
+Example:
+
+Request:
+22 FF FF
+
+Negative response:
+7F 22 31
+
+Interpretation:
+The ReadDataByIdentifier request was rejected because the requested DID is
+outside the supported range in this synthetic knowledge base.
+
+
+================================================
+11. REQUEST VALIDATION RULES
+================================================
+
+Rule R001:
+A UDS request must contain a valid Service Identifier.
+
+Rule R002:
+Service 0x22 requires a two-byte DID.
+
+Rule R003:
+Service 0x2E requires a two-byte DID and associated data.
+
+Rule R004:
+Service 0x27 requires a valid security access subfunction.
+
+Rule R005:
+Service 0x31 requires a valid routine-control subfunction and two-byte RID.
+
+Rule R006:
+Service 0x10 requires a valid diagnostic-session subfunction.
+
+Rule R007:
+Service 0x11 requires a valid ECU-reset subfunction.
+
+Rule R008:
+Service 0x3E requires the Tester Present subfunction in the supported format.
+
+Rule R009:
+An incomplete request should be rejected as an invalid message format.
+
+Rule R010:
+An unsupported service should produce a Service Not Supported condition.
+
+Rule R011:
+An unsupported DID may produce NRC 0x31 Request Out Of Range.
+
+Rule R012:
+Operations requiring security access should not be treated as valid when
+the required security condition is not satisfied.
+
+
+================================================
+12. SAMPLE DIAGNOSTIC SCENARIOS
+================================================
+
+Scenario S001:
+Read supported DID.
+
+Request:
+22 F1 90
+
+Expected:
+Positive response beginning with 62 F1 90.
+
+Scenario S002:
+Read unsupported DID.
+
+Request:
+22 FF FF
+
+Expected:
+Negative response:
+7F 22 31
+
+Scenario S003:
+Incomplete ReadDataByIdentifier request.
+
+Request:
+22 F1
+
+Expected:
+Negative response condition associated with incorrect message length,
+NRC 0x13.
+
+Scenario S004:
+Enter Extended Diagnostic Session.
+
+Request:
+10 03
+
+Expected:
+Positive response beginning with 50 03.
+
+Scenario S005:
+Request unsupported diagnostic service.
+
+Example:
+99
+
+Expected:
+Negative response condition:
+Service Not Supported, NRC 0x11.
+
+Scenario S006:
+Tester Present.
+
+Request:
+3E 00
+
+Expected:
+Positive response:
+7E 00
+
+
+================================================
+13. SAMPLE TEST CASE TEMPLATES
+================================================
+
+Test Case:
+TC_001
+
+Title:
+Read supported DID
+
+Service:
+0x22
+
+Request:
+22 F1 90
+
+Expected:
+Positive response beginning with 62 F1 90.
+
+Test Type:
+Positive
+
+Purpose:
+Verify that the ECU returns data for a supported DID.
+
+
+------------------------------------------------
+
+Test Case:
+TC_002
+
+Title:
+Read unsupported DID
+
+Service:
+0x22
+
+Request:
+22 FF FF
+
+Expected:
+Negative response:
+7F 22 31
+
+NRC:
+0x31 - Request Out Of Range
+
+Test Type:
+Negative
+
+Purpose:
+Verify that an unsupported DID is rejected.
+
+
+------------------------------------------------
+
+Test Case:
+TC_003
+
+Title:
+Read DID with incomplete request
+
+Service:
+0x22
+
+Request:
+22 F1
+
+Expected:
+Negative response associated with incorrect message length.
+
+NRC:
+0x13 - Incorrect Message Length Or Invalid Format
+
+Test Type:
+Negative
+
+Purpose:
+Verify request-length validation.
+
+
+------------------------------------------------
+
+Test Case:
+TC_004
+
+Title:
+Enter Extended Diagnostic Session
+
+Service:
+0x10
+
+Request:
+10 03
+
+Expected:
+Positive response beginning with 50 03.
+
+Test Type:
+Positive
+
+Purpose:
+Verify transition to Extended Diagnostic Session.
+
+
+================================================
+14. RAG GROUNDING REQUIREMENT
+================================================
+
+The AI assistant must use retrieved information from this knowledge base when
+answering diagnostic questions.
+
+The generated answer should:
+1. Answer the user's question.
+2. Use retrieved knowledge as context.
+3. Avoid inventing unsupported UDS behavior.
+4. Provide a source citation referring to the relevant knowledge-base section.
+5. Clearly indicate limitations when the knowledge base does not contain
+   sufficient information.
+
+
+================================================
+15. SYNTHETIC DATASET LIMITATIONS
+================================================
+
+This knowledge base is intentionally limited for academic demonstration.
+
+It does not represent:
+- A complete ISO 14229 implementation
+- An OEM-specific diagnostic implementation
+- A production ECU
+- A real vehicle communication stack
+- Complete diagnostic timing behavior
+- Complete session/security state machines
+- Actual CAN communication
+
+Any generated diagnostic test case must be treated as a demonstration template
+and reviewed by a qualified engineer before use in an actual ECU or vehicle
+environment.

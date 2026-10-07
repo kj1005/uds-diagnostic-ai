@@ -1,0 +1,150 @@
+{
+    "retrieval_cases":  [
+                            {
+                                "id":  "R01",
+                                "question":  "What is UDS and what is a service identifier?",
+                                "expected_section":  "UDS OVERVIEW"
+                            },
+                            {
+                                "id":  "R02",
+                                "question":  "Which subfunction requests Extended Diagnostic Session and what response is expected?",
+                                "expected_section":  "SERVICE 0x10 — DIAGNOSTIC SESSION CONTROL"
+                            },
+                            {
+                                "id":  "R03",
+                                "question":  "What does ECU Reset request 11 01 mean and what positive response is expected?",
+                                "expected_section":  "SERVICE 0x11 — ECU RESET"
+                            },
+                            {
+                                "id":  "R04",
+                                "question":  "Which DID is the demonstration VIN and what request reads it?",
+                                "expected_section":  "SERVICE 0x22 — READ DATA BY IDENTIFIER"
+                            },
+                            {
+                                "id":  "R05",
+                                "question":  "What are the Request Seed and Send Key Security Access subfunctions?",
+                                "expected_section":  "SERVICE 0x27 — SECURITY ACCESS"
+                            },
+                            {
+                                "id":  "R06",
+                                "question":  "What request format is used to write data by identifier?",
+                                "expected_section":  "SERVICE 0x2E — WRITE DATA BY IDENTIFIER"
+                            },
+                            {
+                                "id":  "R07",
+                                "question":  "What are the Routine Control start, stop, and results subfunctions?",
+                                "expected_section":  "SERVICE 0x31 — ROUTINE CONTROL"
+                            },
+                            {
+                                "id":  "R08",
+                                "question":  "What is the Tester Present request and positive response?",
+                                "expected_section":  "SERVICE 0x3E — TESTER PRESENT"
+                            },
+                            {
+                                "id":  "R09",
+                                "question":  "What is the format of a negative response and what does NRC 0x31 mean?",
+                                "expected_section":  "NEGATIVE RESPONSE CODES"
+                            },
+                            {
+                                "id":  "R10",
+                                "question":  "What are the positive and negative response message structures?",
+                                "expected_section":  "POSITIVE AND NEGATIVE RESPONSE STRUCTURE"
+                            }
+                        ],
+    "validator_cases":  [
+                            {
+                                "id":  "V01",
+                                "request":  "22 F1 90",
+                                "expected_valid":  true,
+                                "expected_service_id":  "0x22",
+                                "expected_nrc":  null
+                            },
+                            {
+                                "id":  "V02",
+                                "request":  "22 FF FF",
+                                "expected_valid":  false,
+                                "expected_service_id":  "0x22",
+                                "expected_nrc":  "0x31"
+                            },
+                            {
+                                "id":  "V03",
+                                "request":  "10 03",
+                                "expected_valid":  true,
+                                "expected_service_id":  "0x10",
+                                "expected_nrc":  null
+                            },
+                            {
+                                "id":  "V04",
+                                "request":  "10 7F",
+                                "expected_valid":  false,
+                                "expected_service_id":  "0x10",
+                                "expected_nrc":  "0x12"
+                            },
+                            {
+                                "id":  "V05",
+                                "request":  "22 F1",
+                                "expected_valid":  false,
+                                "expected_service_id":  "0x22",
+                                "expected_nrc":  "0x13"
+                            },
+                            {
+                                "id":  "V06",
+                                "request":  "3E 00",
+                                "expected_valid":  true,
+                                "expected_service_id":  "0x3E",
+                                "expected_nrc":  null
+                            },
+                            {
+                                "id":  "V07",
+                                "request":  "99 00",
+                                "expected_valid":  false,
+                                "expected_service_id":  "0x99",
+                                "expected_nrc":  "0x11"
+                            },
+                            {
+                                "id":  "V08",
+                                "request":  "27 02",
+                                "expected_valid":  false,
+                                "expected_service_id":  "0x27",
+                                "expected_nrc":  "0x13"
+                            }
+                        ],
+    "generation_cases":  [
+                             {
+                                 "id":  "G01",
+                                 "requirement":  "Generate tests for reading the VIN DID",
+                                 "expected_requests":  [
+                                                           "22 F1 90",
+                                                           "22 FF FF"
+                                                       ],
+                                 "required_types":  [
+                                                        "positive",
+                                                        "negative"
+                                                    ]
+                             },
+                             {
+                                 "id":  "G02",
+                                 "requirement":  "Generate tests for Diagnostic Session Control",
+                                 "expected_requests":  [
+                                                           "10 03",
+                                                           "10"
+                                                       ],
+                                 "required_types":  [
+                                                        "positive",
+                                                        "negative"
+                                                    ]
+                             },
+                             {
+                                 "id":  "G03",
+                                 "requirement":  "Generate tests for Tester Present",
+                                 "expected_requests":  [
+                                                           "3E 00",
+                                                           "3E"
+                                                       ],
+                                 "required_types":  [
+                                                        "positive",
+                                                        "negative"
+                                                    ]
+                             }
+                         ]
+}
